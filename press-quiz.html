@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The B2 Gazette — Quality Press vs. Yellow Press</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#EFE9DA;
+    --cream-dark:#E3DCC9;
+    --ink:#1C1B19;
+    --tabloid:#C1272D;
+    --tabloid-dark:#8f1c21;
+    --broadsheet:#1F3350;
+    --broadsheet-light:#2c4770;
+    --gold:#A9812F;
+    --grey:#8B8478;
+    --ok:#2E6B3E;
+    --bad:#B0342B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(28,27,25,0.05) 1px, transparent 0);
+    background-size: 14px 14px;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{position:relative;margin-bottom:22px;}
+  .masthead-row{
+    display:flex; align-items:stretch; border-bottom:4px solid var(--ink);
+    clip-path: polygon(0 0,100% 0,100% 88%,97% 100%,94% 86%,91% 100%,88% 86%,85% 100%,82% 86%,79% 100%,76% 86%,73% 100%,70% 86%,67% 100%,64% 86%,61% 100%,58% 86%,55% 100%,52% 86%,49% 100%,46% 86%,43% 100%,40% 86%,37% 100%,34% 86%,31% 100%,28% 86%,25% 100%,22% 86%,19% 100%,16% 86%,13% 100%,10% 86%,7% 100%,4% 86%,1% 100%,0 88%);
+    padding-bottom:14px;
+  }
+  .masthead-half{flex:1; display:flex; align-items:center; justify-content:center; line-height:0.85;}
+  .masthead-half.left{
+    background:var(--broadsheet); color:var(--cream);
+    font-family:'Playfair Display', serif; font-weight:900; font-style:italic;
+    font-size:clamp(30px,8vw,52px); padding:16px 8px 16px 4px; justify-content:flex-end;
+  }
+  .masthead-half.right{
+    background:var(--tabloid); color:var(--cream);
+    font-family:'Anton', sans-serif; letter-spacing:1px;
+    font-size:clamp(30px,8vw,52px); padding:16px 4px 16px 8px; justify-content:flex-start;
+  }
+  .masthead-sub{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--grey); margin-top:8px; flex-wrap:wrap; gap:6px;
+  }
+  .masthead-sub b{color:var(--ink);}
+  .tagline{
+    text-align:center; font-family:'Inter',sans-serif; font-size:13px; color:var(--ink);
+    margin-top:10px; font-weight:600; letter-spacing:.02em;
+  }
+  .tagline span{color:var(--tabloid); font-weight:800;}
+  .tagline span.q{color:var(--broadsheet);}
+
+  /* ---------- PROGRESS ---------- */
+  .progress-bar{
+    margin-top:16px; display:flex; align-items:center; gap:10px;
+    font-family:'Inter',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--grey);
+  }
+  .progress-track{flex:1; height:6px; background:var(--cream-dark); border:1px solid var(--ink); position:relative; overflow:hidden;}
+  .progress-fill{height:100%; background:repeating-linear-gradient(45deg,var(--ink),var(--ink) 4px,var(--broadsheet) 4px,var(--broadsheet) 8px); transition:width .35s ease;}
+  .circulation{font-family:'Inter',sans-serif; font-size:11px; font-weight:700; color:var(--ink); white-space:nowrap;}
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:#fbf8f1; border:1.5px solid var(--ink); margin-top:20px;
+    box-shadow:6px 6px 0 rgba(28,27,25,0.12);
+    position:relative; padding:26px 22px 22px;
+  }
+  .card::before{
+    content:''; position:absolute; top:-1.5px; left:-1.5px; right:-1.5px; height:6px;
+    background:repeating-linear-gradient(90deg,var(--ink) 0 8px, transparent 8px 16px);
+  }
+  .kicker{
+    font-family:'Inter',sans-serif; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+    display:inline-block; padding:3px 8px; margin-bottom:10px; color:#fff;
+  }
+  .kicker.dispatch{background:var(--ink);}
+  .q-title{
+    font-family:'Playfair Display', serif; font-weight:800; font-size:clamp(21px,4vw,27px);
+    margin:0 0 6px; line-height:1.15;
+  }
+  .q-type{font-family:'Inter',sans-serif; font-size:12px; color:var(--grey); font-style:italic; margin-bottom:14px;}
+  .q-prompt{font-size:16.5px; line-height:1.55; margin-bottom:18px; white-space:pre-line;}
+  .q-body{margin-bottom:16px;}
+
+  /* chips (Q1 sort) */
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .chip{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px;
+    padding:8px 12px; border:2px solid var(--ink); background:#fff; cursor:pointer;
+    transition:all .15s ease; user-select:none;
+  }
+  .chip[data-state="Y"]{background:var(--tabloid); color:#fff; border-color:var(--tabloid-dark);}
+  .chip[data-state="Q"]{background:var(--broadsheet); color:#fff; border-color:var(--broadsheet-light);}
+  .chip.correct{outline:3px solid var(--ok); outline-offset:2px;}
+  .chip.incorrect{outline:3px solid var(--bad); outline-offset:2px;}
+  .legend{display:flex; gap:14px; font-family:'Inter',sans-serif; font-size:11.5px; color:var(--grey); margin-bottom:12px; flex-wrap:wrap;}
+  .legend em{font-style:normal; padding:1px 7px; color:#fff; font-weight:700;}
+  .legend .y{background:var(--tabloid);}
+  .legend .q{background:var(--broadsheet);}
+  .legend .n{background:#bbb; color:var(--ink);}
+
+  /* true/false + classify (toggle pairs) */
+  .tf-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:10px 0; border-bottom:1px dashed var(--grey);
+  }
+  .tf-item:last-child{border-bottom:none;}
+  .tf-text{font-size:15.5px; flex:1;}
+  .tf-btns{display:flex; gap:6px; flex-shrink:0;}
+  .tf-btn{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12px; letter-spacing:.03em;
+    padding:6px 10px; border:2px solid var(--ink); background:#fff; cursor:pointer; text-transform:uppercase;
+  }
+  .tf-btn.active{background:var(--ink); color:#fff;}
+  .tf-item.correct{background:rgba(46,107,62,0.08);}
+  .tf-item.incorrect{background:rgba(176,52,43,0.08);}
+
+  /* fill gaps */
+  .gap-item{margin-bottom:12px; font-size:15.5px; line-height:1.6;}
+  .gap-item input{
+    font-family:'Source Serif 4', serif; font-size:15px; border:none; border-bottom:2px solid var(--ink);
+    background:transparent; padding:2px 4px; width:150px; text-align:center; outline:none;
+  }
+  .gap-item input.correct{border-color:var(--ok); background:rgba(46,107,62,0.1);}
+  .gap-item input.incorrect{border-color:var(--bad); background:rgba(176,52,43,0.1);}
+  .wordbank{
+    font-family:'Inter',sans-serif; font-size:12.5px; color:var(--grey); margin-bottom:14px;
+    border:1px dashed var(--grey); padding:8px 10px;
+  }
+  .wordbank b{color:var(--ink);}
+
+  /* matching */
+  .match-item{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .match-term{font-family:'Inter',sans-serif; font-weight:700; font-size:14px; min-width:120px;}
+  .match-item select{
+    font-family:'Inter',sans-serif; font-size:13.5px; padding:6px 8px; border:2px solid var(--ink); background:#fff;
+  }
+  .match-item select.correct{border-color:var(--ok); background:rgba(46,107,62,0.1);}
+  .match-item select.incorrect{border-color:var(--bad); background:rgba(176,52,43,0.1);}
+  .defs-box{font-family:'Inter',sans-serif; font-size:12.5px; color:var(--grey); border:1px dashed var(--grey); padding:8px 10px; margin-bottom:14px; line-height:1.6;}
+
+  /* ordering */
+  .order-pool{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .order-item{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px;
+    padding:8px 12px; border:2px solid var(--ink); background:#fff; cursor:pointer;
+  }
+  .order-item.used{opacity:.35; cursor:not-allowed;}
+  .order-list{list-style:none; margin:0 0 14px; padding:0; counter-reset:step;}
+  .order-list li{
+    counter-increment:step; display:flex; align-items:center; gap:10px;
+    padding:8px 10px; border-bottom:1px solid var(--cream-dark); font-family:'Inter',sans-serif; font-size:13.5px; cursor:pointer;
+  }
+  .order-list li::before{
+    content:counter(step); font-family:'Anton',sans-serif; color:var(--tabloid); font-size:16px; width:20px;
+  }
+  .order-list li.correct{background:rgba(46,107,62,0.1);}
+  .order-list li.incorrect{background:rgba(176,52,43,0.1);}
+  .order-hint{font-family:'Inter',sans-serif; font-size:11.5px; color:var(--grey); margin-bottom:10px; font-style:italic;}
+
+  /* creative */
+  textarea{
+    width:100%; min-height:90px; font-family:'Source Serif 4', serif; font-size:15px;
+    border:2px solid var(--ink); padding:10px; resize:vertical; background:#fff;
+  }
+  .model-answer{
+    margin-top:12px; padding:12px; background:var(--cream-dark); border-left:4px solid var(--gold);
+    font-size:14.5px; display:none;
+  }
+  .model-answer.show{display:block;}
+  .model-answer b{font-family:'Inter',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--gold); display:block; margin-bottom:4px;}
+
+  /* buttons */
+  .btn-row{display:flex; justify-content:space-between; align-items:center; margin-top:20px; gap:10px; flex-wrap:wrap;}
+  .stamp{
+    font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:11px 18px; border:2.5px solid var(--ink); background:#fff; cursor:pointer; transform:rotate(-1deg);
+    transition:transform .1s ease;
+  }
+  .stamp:hover{transform:rotate(-1deg) scale(1.03);}
+  .stamp:active{transform:rotate(-1deg) scale(0.97);}
+  .stamp.primary{background:var(--ink); color:#fff;}
+  .stamp.check{background:var(--tabloid); color:#fff; border-color:var(--tabloid-dark);}
+  .stamp:disabled{opacity:.3; cursor:not-allowed;}
+  .nav-links{display:flex; gap:8px;}
+
+  .feedback{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13px; margin-top:14px; padding:8px 12px;
+    border:2px solid var(--ink); display:none; align-items:center; gap:8px;
+  }
+  .feedback.show{display:flex;}
+  .feedback.good{border-color:var(--ok); color:var(--ok); background:rgba(46,107,62,0.08);}
+  .feedback.mixed{border-color:var(--gold); color:var(--gold); background:rgba(169,129,47,0.1);}
+  .feedback.bad{border-color:var(--bad); color:var(--bad); background:rgba(176,52,43,0.08);}
+
+  /* results page */
+  .results-head{text-align:center; margin-bottom:10px;}
+  .results-score{font-family:'Anton',sans-serif; font-size:64px; color:var(--tabloid); line-height:1;}
+  .results-total{font-family:'Inter',sans-serif; color:var(--grey); font-size:13px; text-transform:uppercase; letter-spacing:.08em;}
+  .verdict{
+    font-family:'Playfair Display',serif; font-weight:800; font-style:italic; font-size:22px;
+    text-align:center; margin:14px 0 18px; color:var(--broadsheet);
+  }
+  .results-table{width:100%; border-collapse:collapse; font-family:'Inter',sans-serif; font-size:13px; margin-bottom:18px;}
+  .results-table td{padding:8px 6px; border-bottom:1px solid var(--cream-dark);}
+  .results-table td:last-child{text-align:right; font-weight:700; white-space:nowrap;}
+
+  footer.credits{
+    text-align:center; font-family:'Inter',sans-serif; font-size:10.5px; color:var(--grey); margin-top:26px;
+  }
+
+  @media (max-width:480px){
+    .masthead-half{font-size:9vw;}
+    .card{padding:20px 14px 18px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .stamp, .progress-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="masthead-row">
+      <div class="masthead-half left">THE</div>
+      <div class="masthead-half right">GAZETTE</div>
+    </div>
+    <div class="masthead-sub">
+      <span>Special Bilingual Edition</span>
+      <span><b>B2</b> · Eingangsklasse Berufliches Gymnasium</span>
+      <span>Price: Your Undivided Attention</span>
+    </div>
+    <div class="tagline"><span>YELLOW PRESS</span> vs. <span class="q">QUALITY PRESS</span> — A Field Guide in 9 Dispatches</div>
+  </div>
+
+  <div class="progress-bar">
+    <span id="progressLabel">Dispatch 1 / 9</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:11%"></div></div>
+    <span class="circulation" id="circulation">Score: 0</span>
+  </div>
+
+  <div id="stage"></div>
+
+  <footer class="credits">Based on materials adapted from bbc.co.uk/bitesize, thescottishsun.co.uk &amp; independent.co.uk · Merian Schule English</footer>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const QUESTIONS = [
+  {
+    id:'sort', kicker:'Dispatch 1', title:'Sort the Newsstand', type:'sort',
+    typeLabel:'Multiple Choice / Sorting',
+    prompt:'Click each newspaper to cycle through: unassigned → Yellow Press → Quality Press → unassigned. Then check your work.',
+    papers:[
+      {name:'The Sun', correct:'Y'}, {name:'Daily Mirror', correct:'Y'}, {name:'Daily Star', correct:'Y'},
+      {name:'The Guardian', correct:'Q'}, {name:'The New York Times', correct:'Q'}, {name:'The Washington Post', correct:'Q'},
+      {name:'Daily Mail', correct:'Y'}, {name:'Daily Express', correct:'Y'}, {name:'The Times', correct:'Q'}
+    ]
+  },
+  {
+    id:'tf', kicker:'Dispatch 2', title:'True or False?', type:'tf',
+    typeLabel:'Richtig / Falsch',
+    prompt:'Decide whether each statement is true or false.',
+    items:[
+      {text:'Tabloids are usually larger in size than broadsheets.', correct:false},
+      {text:'Broadsheets focus on serious news, politics and international events.', correct:true},
+      {text:'Tabloids are typically cheaper than broadsheets.', correct:true},
+      {text:'Quality newspapers are aimed at a wider, more general audience.', correct:false},
+      {text:'Tabloids often use short, simple sentences and a conversational style.', correct:true}
+    ]
+  },
+  {
+    id:'gap1', kicker:'Dispatch 3', title:'Fill the Gaps — Tabloid Traits', type:'gap',
+    typeLabel:'Lückentext',
+    wordbank:'sensational · informal · images · celebrity · quickly',
+    prompt:'Complete each sentence with one word from the box above.',
+    items:[
+      {before:'Tabloids use', after:'and attention-grabbing headlines.', accept:['sensational']},
+      {before:'Their layout includes lots of', after:'and bold headlines.', accept:['images']},
+      {before:'The writing style is more', after:'and conversational.', accept:['informal']},
+      {before:'Tabloids often focus on', after:'gossip and human-interest stories.', accept:['celebrity']},
+      {before:'They are meant to be read', after:'and easily.', accept:['quickly']}
+    ]
+  },
+  {
+    id:'gap2', kicker:'Dispatch 4', title:'Fill the Gaps — Broadsheet Traits', type:'gap',
+    typeLabel:'Lückentext',
+    wordbank:'in-depth · clean · formal · objective · educated',
+    prompt:'Complete each sentence with one word from the box above.',
+    items:[
+      {before:'Broadsheets offer more', after:'reporting and analysis.', accept:['in-depth']},
+      {before:'Their layout is', after:'and straightforward, with fewer images.', accept:['clean']},
+      {before:'The writing style is typically more', after:'…', accept:['formal']},
+      {before:'…and more', after:'in tone.', accept:['objective']},
+      {before:'Broadsheets are targeted at a more', after:'and affluent readership.', accept:['educated']}
+    ]
+  },
+  {
+    id:'match', kicker:'Dispatch 5', title:'Match the Term', type:'match',
+    typeLabel:'Zuordnung',
+    prompt:'Match each newspaper-article term with its definition.',
+    defs:{
+      A:'A short, catchy title that condenses the main issue of the article.',
+      B:'A false name an author uses instead of their real name.',
+      C:'Gives more detail directly under the headline.',
+      D:"The opening that grabs the reader's attention (e.g. an anecdote or question).",
+      E:'The body of the article containing facts, details and arguments.'
+    },
+    items:[
+      {term:'headline', correct:'A'}, {term:'subheading', correct:'C'}, {term:'nom de plume', correct:'B'},
+      {term:'hook', correct:'D'}, {term:'main part', correct:'E'}
+    ]
+  },
+  {
+    id:'order', kicker:'Dispatch 6', title:'Build the Article', type:'order',
+    typeLabel:'Reihenfolge',
+    prompt:'Click the pieces below, in order, to reconstruct a typical newspaper article — from top to bottom.',
+    items:[
+      'Headline','Subheading','Author (nom de plume) & date','Basic facts (Wh-questions)','Details / further information','Conclusion / outlook'
+    ],
+    correctOrder:[0,1,2,3,4,5]
+  },
+  {
+    id:'classify', kicker:'Dispatch 7', title:'Tabloid or Broadsheet?', type:'tf',
+    typeLabel:'Zuordnung',
+    prompt:'Read each headline and decide where it belongs.',
+    labels:['Tabloid','Broadsheet'],
+    items:[
+      {text:'"Terrifying twister tears through town! Miraculous survivors tell all!"', correct:false},
+      {text:'"Severe tornado causes widespread damage and displacement in affected community"', correct:true},
+      {text:'"Politician caught in steamy love affair! Shocking details inside!"', correct:false},
+      {text:'"Politician implicated in ethical breach following investigation"', correct:true}
+    ]
+  },
+  {
+    id:'creative1', kicker:'Dispatch 8', title:'Write a Tabloid Headline', type:'creative',
+    typeLabel:'Kreativaufgabe',
+    prompt:'Use these keywords to write an eye-catching TABLOID headline (emotive, short, attention-grabbing):\n\nlocal school · new sports hall · funding · mayor',
+    model:"Cash Crisis! Mayor's Broken Promise Leaves School Without New Sports Hall"
+  },
+  {
+    id:'creative2', kicker:'Dispatch 9', title:'Write a Broadsheet Headline', type:'creative',
+    typeLabel:'Kreativaufgabe',
+    prompt:'Now rewrite the same story (same keywords: local school · new sports hall · funding · mayor) as a QUALITY PRESS headline — factual, neutral, formal.',
+    model:"Mayor's Office Reviews Funding Delay for New School Sports Facility"
+  }
+];
+
+/* ============ STATE ============ */
+let current = 0;
+const state = {}; // per question id, holds interaction state
+const checked = {}; // per question id: boolean
+const scores = {}; // per question id: {earned, max}
+QUESTIONS.forEach(q=>{ state[q.id]={}; checked[q.id]=false; scores[q.id]={earned:0,max:0}; });
+
+const stage = document.getElementById('stage');
+
+function totalScore(){
+  let earned=0, max=0;
+  Object.values(scores).forEach(s=>{earned+=s.earned; max+=s.max;});
+  return {earned, max};
+}
+function updateHeader(){
+  document.getElementById('progressLabel').textContent = current < QUESTIONS.length ? `Dispatch ${current+1} / ${QUESTIONS.length}` : 'Final Edition';
+  const pct = current < QUESTIONS.length ? Math.round(((current+1)/QUESTIONS.length)*100) : 100;
+  document.getElementById('progressFill').style.width = pct+'%';
+  const t = totalScore();
+  document.getElementById('circulation').textContent = `Score: ${t.earned} / ${t.max}`;
+}
+
+function goTo(i){
+  current = i;
+  if(i>=QUESTIONS.length){ renderResults(); } else { renderQuestion(i); }
+  updateHeader();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============ RENDER ============ */
+function renderQuestion(i){
+  const q = QUESTIONS[i];
+  let bodyHtml = '';
+
+  if(q.type==='sort'){
+    bodyHtml += `<div class="legend"><em class="n">grey = unassigned</em><em class="y">red = Yellow Press</em><em class="q">navy = Quality Press</em></div>`;
+    bodyHtml += `<div class="chip-row">` + q.papers.map((p,idx)=>{
+      const st = state[q.id][idx] || 'N';
+      return `<button class="chip" data-idx="${idx}" data-state="${st}">${p.name}</button>`;
+    }).join('') + `</div>`;
+  }
+
+  if(q.type==='tf'){
+    const labels = q.labels || ['True','False'];
+    bodyHtml += q.items.map((it,idx)=>{
+      const sel = state[q.id][idx];
+      return `<div class="tf-item" data-idx="${idx}">
+        <span class="tf-text">${it.text}</span>
+        <span class="tf-btns">
+          <button class="tf-btn ${sel===true?'active':''}" data-val="true">${labels[0]}</button>
+          <button class="tf-btn ${sel===false?'active':''}" data-val="false">${labels[1]}</button>
+        </span>
+      </div>`;
+    }).join('');
+  }
+
+  if(q.type==='gap'){
+    bodyHtml += `<div class="wordbank"><b>Word bank:</b> ${q.wordbank}</div>`;
+    bodyHtml += q.items.map((it,idx)=>{
+      const val = state[q.id][idx] || '';
+      return `<div class="gap-item">${idx+1}. ${it.before} <input type="text" data-idx="${idx}" value="${val}" placeholder="…"> ${it.after}</div>`;
+    }).join('');
+  }
+
+  if(q.type==='match'){
+    bodyHtml += `<div class="defs-box">` + Object.entries(q.defs).map(([k,v])=>`<b>${k}</b>) ${v}`).join('<br>') + `</div>`;
+    bodyHtml += q.items.map((it,idx)=>{
+      const val = state[q.id][idx] || '';
+      const opts = Object.keys(q.defs).map(k=>`<option value="${k}" ${val===k?'selected':''}>${k}</option>`).join('');
+      return `<div class="match-item"><span class="match-term">${it.term}</span> →
+        <select data-idx="${idx}"><option value="">choose…</option>${opts}</select></div>`;
+    }).join('');
+  }
+
+  if(q.type==='order'){
+    const seq = state[q.id].seq || [];
+    bodyHtml += `<div class="order-hint">Pool (click to add) →</div>`;
+    bodyHtml += `<div class="order-pool">` + q.items.map((txt,idx)=>{
+      const used = seq.includes(idx);
+      return `<button class="order-item ${used?'used':''}" data-idx="${idx}" ${used?'disabled':''}>${txt}</button>`;
+    }).join('') + `</div>`;
+    bodyHtml += `<div class="order-hint">Your article, top to bottom (click an item to remove it):</div>`;
+    bodyHtml += `<ol class="order-list">` + seq.map((idx)=>`<li data-idx="${idx}">${q.items[idx]}</li>`).join('') + `</ol>`;
+  }
+
+  if(q.type==='creative'){
+    const val = state[q.id].text || '';
+    bodyHtml += `<textarea id="creativeInput" placeholder="Type your headline here…">${val}</textarea>`;
+    bodyHtml += `<div class="model-answer ${checked[q.id]?'show':''}"><b>Model answer (sample — wording may vary)</b>${q.model}</div>`;
+  }
+
+  const feedback = renderFeedback(q);
+
+  stage.innerHTML = `
+    <div class="card">
+      <span class="kicker dispatch">${q.kicker}</span>
+      <h2 class="q-title">${q.title}</h2>
+      <div class="q-type">${q.typeLabel}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      <div class="q-body">${bodyHtml}</div>
+      ${feedback}
+      <div class="btn-row">
+        <div class="nav-links">
+          <button class="stamp" id="prevBtn" ${i===0?'disabled':''}>← Back</button>
+          <button class="stamp primary" id="nextBtn">${i===QUESTIONS.length-1?'See Final Edition →':'Next Dispatch →'}</button>
+        </div>
+        ${q.type==='creative' ? `<button class="stamp check" id="revealBtn">${checked[q.id]?'Hide':'Reveal'} Model Answer</button>` : `<button class="stamp check" id="checkBtn">Check Answer</button>`}
+      </div>
+    </div>
+  `;
+
+  attachHandlers(q);
+}
+
+function renderFeedback(q){
+  if(!checked[q.id]) return `<div class="feedback"></div>`;
+  const s = scores[q.id];
+  if(q.type==='creative'){
+    return `<div class="feedback show mixed">✎ Compare your headline with the model answer above — there's no single right answer here.</div>`;
+  }
+  const cls = s.earned===s.max ? 'good' : (s.earned===0 ? 'bad' : 'mixed');
+  const icon = cls==='good' ? '✔' : (cls==='bad' ? '✘' : '~');
+  return `<div class="feedback show ${cls}">${icon} ${s.earned} / ${s.max} correct.</div>`;
+}
+
+/* ============ HANDLERS ============ */
+function attachHandlers(q){
+  document.getElementById('prevBtn').onclick = ()=> goTo(current-1);
+  document.getElementById('nextBtn').onclick = ()=> goTo(current+1);
+
+  if(q.type==='creative'){
+    document.getElementById('creativeInput').oninput = (e)=>{ state[q.id].text = e.target.value; };
+    document.getElementById('revealBtn').onclick = ()=>{
+      checked[q.id] = !checked[q.id];
+      renderQuestion(current);
+    };
+    return;
+  }
+
+  document.getElementById('checkBtn').onclick = ()=> checkAnswer(q);
+
+  if(q.type==='sort'){
+    document.querySelectorAll('.chip').forEach(chip=>{
+      chip.onclick = ()=>{
+        const idx = chip.dataset.idx;
+        const order = ['N','Y','Q'];
+        const cur = state[q.id][idx] || 'N';
+        const next = order[(order.indexOf(cur)+1) % order.length];
+        state[q.id][idx] = next;
+        renderQuestion(current);
+      };
+    });
+  }
+
+  if(q.type==='tf'){
+    document.querySelectorAll('.tf-item').forEach(item=>{
+      const idx = item.dataset.idx;
+      item.querySelectorAll('.tf-btn').forEach(btn=>{
+        btn.onclick = ()=>{
+          state[q.id][idx] = (btn.dataset.val === 'true');
+          renderQuestion(current);
+        };
+      });
+    });
+  }
+
+  if(q.type==='gap'){
+    document.querySelectorAll('.gap-item input').forEach(inp=>{
+      inp.oninput = (e)=>{ state[q.id][e.target.dataset.idx] = e.target.value; };
+    });
+  }
+
+  if(q.type==='match'){
+    document.querySelectorAll('.match-item select').forEach(sel=>{
+      sel.onchange = (e)=>{ state[q.id][e.target.dataset.idx] = e.target.value; };
+    });
+  }
+
+  if(q.type==='order'){
+    document.querySelectorAll('.order-item').forEach(btn=>{
+      btn.onclick = ()=>{
+        if(btn.disabled) return;
+        const idx = parseInt(btn.dataset.idx);
+        state[q.id].seq = state[q.id].seq || [];
+        state[q.id].seq.push(idx);
+        renderQuestion(current);
+      };
+    });
+    document.querySelectorAll('.order-list li').forEach(li=>{
+      li.onclick = ()=>{
+        const idx = parseInt(li.dataset.idx);
+        state[q.id].seq = (state[q.id].seq||[]).filter(x=>x!==idx);
+        renderQuestion(current);
+      };
+    });
+  }
+}
+
+function checkAnswer(q){
+  let earned=0, max=0;
+
+  if(q.type==='sort'){
+    max = q.papers.length;
+    q.papers.forEach((p,idx)=>{
+      if((state[q.id][idx]||'N') === p.correct) earned++;
+    });
+    checked[q.id]=true;
+    renderQuestion(current);
+    document.querySelectorAll('.chip').forEach((chip,idx)=>{
+      const p = q.papers[idx];
+      chip.classList.add((state[q.id][idx]||'N')===p.correct ? 'correct':'incorrect');
+    });
+  }
+
+  if(q.type==='tf'){
+    max = q.items.length;
+    q.items.forEach((it,idx)=>{ if(state[q.id][idx]===it.correct) earned++; });
+    checked[q.id]=true;
+    renderQuestion(current);
+    document.querySelectorAll('.tf-item').forEach((el,idx)=>{
+      const it = q.items[idx];
+      el.classList.add(state[q.id][idx]===it.correct ? 'correct':'incorrect');
+    });
+  }
+
+  if(q.type==='gap'){
+    max = q.items.length;
+    q.items.forEach((it,idx)=>{
+      const val = (state[q.id][idx]||'').trim().toLowerCase();
+      if(it.accept.includes(val)) earned++;
+    });
+    checked[q.id]=true;
+    renderQuestion(current);
+    document.querySelectorAll('.gap-item input').forEach((inp,idx)=>{
+      const it = q.items[idx];
+      const val = inp.value.trim().toLowerCase();
+      inp.classList.add(it.accept.includes(val) ? 'correct':'incorrect');
+    });
+  }
+
+  if(q.type==='match'){
+    max = q.items.length;
+    q.items.forEach((it,idx)=>{ if(state[q.id][idx]===it.correct) earned++; });
+    checked[q.id]=true;
+    renderQuestion(current);
+    document.querySelectorAll('.match-item select').forEach((sel,idx)=>{
+      const it = q.items[idx];
+      sel.classList.add(state[q.id][idx]===it.correct ? 'correct':'incorrect');
+    });
+  }
+
+  if(q.type==='order'){
+    max = q.items.length;
+    const seq = state[q.id].seq || [];
+    q.correctOrder.forEach((correctIdx, pos)=>{ if(seq[pos]===correctIdx) earned++; });
+    checked[q.id]=true;
+    renderQuestion(current);
+    document.querySelectorAll('.order-list li').forEach((li,pos)=>{
+      const idx = parseInt(li.dataset.idx);
+      li.classList.add(idx===q.correctOrder[pos] ? 'correct':'incorrect');
+    });
+  }
+
+  scores[q.id] = {earned, max};
+  updateHeader();
+}
+
+/* ============ RESULTS ============ */
+function renderResults(){
+  const t = totalScore();
+  const pct = t.max ? Math.round((t.earned/t.max)*100) : 0;
+  let verdict;
+  if(pct>=90) verdict = "Front Page Editor! Outstanding command of press style.";
+  else if(pct>=70) verdict = "Senior Reporter — sharp instincts, minor edits needed.";
+  else if(pct>=50) verdict = "Junior Reporter — solid start, back to the style guide.";
+  else verdict = "Time for a rewrite — revisit the newsroom archives!";
+
+  const rows = QUESTIONS.filter(q=>q.type!=='creative').map(q=>{
+    const s = scores[q.id];
+    const done = checked[q.id];
+    return `<tr><td>${q.kicker}: ${q.title}</td><td>${done ? s.earned+' / '+s.max : '— not checked —'}</td></tr>`;
+  }).join('');
+
+  stage.innerHTML = `
+    <div class="card">
+      <span class="kicker dispatch" style="background:var(--tabloid)">Final Edition</span>
+      <div class="results-head">
+        <div class="results-score">${t.earned}<span style="font-size:28px;color:var(--grey)">/${t.max}</span></div>
+        <div class="results-total">Total score across all graded dispatches</div>
+      </div>
+      <div class="verdict">"${verdict}"</div>
+      <table class="results-table">${rows}</table>
+      <div class="btn-row">
+        <button class="stamp" id="backBtn">← Review Dispatches</button>
+        <button class="stamp primary" id="restartBtn">Start Over</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('backBtn').onclick = ()=> goTo(0);
+  document.getElementById('restartBtn').onclick = ()=>{
+    QUESTIONS.forEach(q=>{ state[q.id]={}; checked[q.id]=false; scores[q.id]={earned:0,max:0}; });
+    goTo(0);
+  };
+}
+
+/* ============ INIT ============ */
+renderQuestion(0);
+updateHeader();
+</script>
+</body>
+</html>
